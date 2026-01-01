@@ -11,6 +11,8 @@ body {
   background: var(--bg);
   color: #333;
 }
+html,body{max-width:100%;overflow-x:hidden;} /* prevent horizontal scrolling on small devices */
+img{max-width:100%;height:auto;display:block;} /* responsive images */
 /* Header */
 .header-outer { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 header { width: 100%; background: transparent; }
@@ -23,11 +25,22 @@ header { width: 100%; background: transparent; }
 }
 .brand { display: flex; align-items: center; gap: 12px; margin-right: 20px; }
 .brand a { display: block; }
-.header-inner .brand img, header img { height: 120px; display: block; }
+.header-inner .brand img, header img, .site-logo { height: 120px; display: block; }
 .tagline { font-size: 12px; color: var(--primary); font-weight: 700; }
 
 /* Nav and actions */
 .main-nav { display: flex; gap: 20px; margin-left: auto; align-items: center; }
+.nav-toggle { display: none; background: transparent; border: 0; width: 44px; height: 44px; align-items:center; justify-content:center; cursor:pointer; }
+.nav-toggle .hamburger{display:block; width:22px; height:2px; background:var(--primary); position:relative}
+.nav-toggle .hamburger:before, .nav-toggle .hamburger:after{content:'';position:absolute;left:0;width:22px;height:2px;background:var(--primary)}
+.nav-toggle .hamburger:before{top:-7px}
+.nav-toggle .hamburger:after{top:7px}
+
+/* Mobile nav (hidden by default) */
+.main-nav.open{display:flex;flex-direction:column;gap:10px;position:absolute;left:0;right:0;top:100%;background:#fff;padding:12px 16px;box-shadow:0 6px 18px rgba(0,0,0,0.08);z-index:60}
+
+/* when nav is open ensure body doesn't scroll horizontally */
+body.nav-open{overflow:hidden}
 .main-nav a { color: var(--primary); text-decoration: none; }
 .main-nav a:hover { background: rgba(106,27,46,0.08); border-radius: 8px; padding: 6px 8px; }
 .main-nav a:focus { outline: 2px solid rgba(106,27,46,0.18); outline-offset: 2px; }
@@ -187,54 +200,35 @@ header { width: 100%; background: transparent; }
 .footer-actions .icon { width: 40px; height: 40px; border-radius: 6px; display:inline-flex; align-items:center; justify-content:center; background: transparent; text-decoration:none; }
 .footer-actions .icon img { width: 24px; height: 24px; display:block; }
 
-  /* Responsive */
-  @media (max-width: 1100px) {
-    .cards-grid { grid-template-columns: 1fr; padding: 0 18px; }
-    header img { height: 120px; }
-    .header-actions .icon { width: 48px; height: 48px; }
-    .card-media img { height: 160px; }
-  }
-  @media (max-width: 767px) {
-    .main-nav { display: none; }
-    .header-inner { padding: 12px 16px; }
-    .hero h1 { font-size: 20px; }
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: flex-start; /* ensure brand (logo) is left-aligned */
-    margin-right: auto; /* push nav to the right */
-    margin-left: 0; /* flush to the left edge */
-  }
-  .main-nav {
-    display: flex;
-    gap: 22px;
-    align-items: center;
-  }
-
-.card-icon {
-  font-size: 34px;
-  background: linear-gradient(180deg, #fff, var(--accent));
-  padding: 10px;
-  border-radius: 12px;
+/* Responsive */
+@media (max-width: 1100px) {
+  .cards-grid { grid-template-columns: repeat(2, 1fr); padding: 0 14px; }
+  header img, .site-logo { height: 120px; }
+  .header-actions .icon { width: 56px; height: 56px; }
+  .card-media img { height: 150px; }
 }
 
+@media (max-width: 900px) {
+  .cards-grid { grid-template-columns: 1fr; padding: 0 16px; }
+  .footer-inner { grid-template-columns: 1fr; text-align: center; }
+}
 
-  .hero-inner {
-    width: 100%;
-    max-width: none; /* allow hero to use full width */
-    margin: 0;
-    padding: 18px 28px;
-  }
-  .hero h1 {
-    font-size: 28px;
-    color: var(--primary);
-    margin: 0 auto;
-    line-height: 1.25;
-    font-weight: 400;
-    max-width: 1100px;
-  }
+@media (max-width: 767px) {
+  /* Mobile header: show hamburger and compact logo */
+  .nav-toggle { display: inline-flex; margin-left: auto; }
+  .main-nav { display: none; }
+  .main-nav.open { display: flex; }
+  .main-nav.open { flex-direction: column; gap: 12px; position: absolute; left: 0; right: 0; top: 100%; background: #fff; padding: 12px 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); z-index: 60; }
+  .header-inner { padding: 10px 12px; }
+  .hero h1 { font-size: 20px; }
+  .cards-grid { grid-template-columns: 1fr; padding: 0 12px; }
+  header img, .site-logo { height: 80px; }
+  .card-media img { height: 160px; }
+
+  /* Footer stack */
+  .footer-inner { display: block; padding: 18px; text-align: center; }
+  .footer-brand, .footer-contact { margin-bottom: 12px; }
+}
 
 /* Ensure CTA sits at bottom of card-body when possible */
 .card-body .btn { margin-top: auto; }
@@ -243,15 +237,12 @@ header { width: 100%; background: transparent; }
 
 .site-footer { padding: 12px 0; margin-top: 12px; border-top: 1px solid rgba(0,0,0,0.03); }
 .footer-inner { max-width: 1100px; margin: 0 auto; text-align: center; color: #7a5b5b; font-size: 13px; }
-.footer-copyright{ text-align: center;}
-/* Responsive tweaks */
-  .cards-grid {
-    width: 100%;
-    max-width: none; /* use full width */
-    margin: 0;
-    padding: 12px 28px; /* reduce side padding and increase width usage */
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(3, 1fr);
-    align-items: stretch; /* ensure grid tracks stretch to same height */
-  }
+.footer-copyright{ text-align: center; }
+
+/* final layout resets */
+.cards-grid { width: 100%; max-width: none; margin: 0; padding: 12px 28px; display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); align-items: stretch; }
+
+/* Ensure on small screens the cards always stack one per row (override any later rules) */
+@media (max-width: 900px) {
+  .cards-grid { grid-template-columns: 1fr !important; padding: 0 12px; }
+}

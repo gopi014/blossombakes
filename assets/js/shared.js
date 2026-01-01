@@ -27,3 +27,31 @@ if (document.readyState === 'loading') {
   // If script is appended after DOMContentLoaded (as done by include loader), run immediately
   runShared();
 }
+
+// Mobile nav toggle: attach handlers regardless of DOMContentLoaded state (elements may be injected)
+function attachMobileNav() {
+  try {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.main-nav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('nav-open', open);
+    });
+    // close nav on link click (mobile)
+    nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      if (nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        document.body.classList.remove('nav-open');
+        const t = document.querySelector('.nav-toggle');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+    }));
+  } catch (e) {
+    console.warn('attachMobileNav error', e);
+  }
+}
+
+// run attachMobileNav after a short delay to allow includes to be injected
+setTimeout(attachMobileNav, 120);
