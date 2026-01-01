@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Chocolate Chip Cookies",
+    "image": "assets/images/cookies.jpg",
+    "description": "Crispy edges, soft center."
+  },
+  {
+    "title": "Vanilla Sponge Cake",
+    "image": "assets/images/cake.jpg",
+    "description": "Soft and fluffy basic sponge."
+  }
+]
