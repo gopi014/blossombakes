@@ -40,4 +40,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   s.src = 'assets/js/shared.js';
   s.defer = true;
   document.body.appendChild(s);
+  // once shared.js loads, attempt to initialize mobile nav and shared logic
+  s.addEventListener('load', () => {
+    try {
+      if (window.runShared) window.runShared();
+      if (window.attachMobileNav) window.attachMobileNav();
+    } catch (e) { console.warn('post-include init', e); }
+  });
+
+  // MutationObserver: watch for changes to data-include elements (helps with race conditions)
+  const observer = new MutationObserver((mutations, obs) => {
+    // if header was injected, initialize shared logic
+    const headerEl = document.querySelector('[data-include="header"]');
+    if (headerEl && headerEl.innerHTML.trim().length > 0) {
+      try {
+        if (window.runShared) window.runShared();
+        if (window.attachMobileNav) window.attachMobileNav();
+      } catch (e) { console.warn('observer init', e); }
+      obs.disconnect(); // done
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 });
